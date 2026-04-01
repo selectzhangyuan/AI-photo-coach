@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-photo-coach/contracts/edit-action.schema.json",
+  "title": "EditAction",
+  "type": "object",
+  "required": ["id", "action_type", "source", "params", "reason", "previewable", "apply_mode"],
+  "properties": {
+    "id": { "type": "string" },
+    "action_type": {
+      "type": "string",
+      "enum": ["crop", "exposure", "white_balance", "contrast", "saturation"]
+    },
+    "source": {
+      "type": "string",
+      "enum": ["cv", "llm", "rule"]
+    },
+    "params": {
+      "type": "object"
+    },
+    "reason": { "type": "string" },
+    "previewable": { "type": "boolean" },
+    "apply_mode": {
+      "type": "string",
+      "enum": ["destructive", "non_destructive"]
+    }
+  },
+  "additionalProperties": false
+}
+

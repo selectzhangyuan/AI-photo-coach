@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-photo-coach/contracts/analysis-result.schema.json",
+  "title": "AnalysisResult",
+  "type": "object",
+  "required": [
+    "version",
+    "summary",
+    "suggestions",
+    "scores",
+    "annotations",
+    "edit_actions"
+  ],
+  "properties": {
+    "version": {
+      "type": "string"
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 1
+    },
+    "suggestions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "type", "text", "priority"],
+        "properties": {
+          "id": { "type": "string" },
+          "type": {
+            "type": "string",
+            "enum": ["composition", "exposure", "color", "story", "other"]
+          },
+          "text": { "type": "string" },
+          "problem": { "type": "string" },
+          "action": { "type": "string" },
+          "priority": {
+            "type": "string",
+            "enum": ["high", "medium", "low"]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "scores": {
+      "type": ["object", "null"],
+      "properties": {
+        "composition": { "type": "number", "minimum": 0, "maximum": 100 },
+        "exposure": { "type": "number", "minimum": 0, "maximum": 100 },
+        "color": { "type": "number", "minimum": 0, "maximum": 100 },
+        "story": { "type": "number", "minimum": 0, "maximum": 100 }
+      },
+      "additionalProperties": true
+    },
+    "features_ref": {
+      "type": ["object", "null"],
+      "properties": {
+        "feature_id": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "annotations": {
+      "type": "array",
+      "items": {
+        "$ref": "annotation.schema.json"
+      }
+    },
+    "edit_actions": {
+      "type": "array",
+      "items": {
+        "$ref": "edit-action.schema.json"
+      }
+    }
+  },
+  "additionalProperties": false
+}

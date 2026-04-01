@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-photo-coach/contracts/annotation.schema.json",
+  "title": "Annotation",
+  "type": "object",
+  "required": [
+    "id",
+    "source",
+    "category",
+    "geometry_type",
+    "coords",
+    "label",
+    "message",
+    "confidence"
+  ],
+  "properties": {
+    "id": { "type": "string" },
+    "source": {
+      "type": "string",
+      "enum": ["cv", "llm", "rule"]
+    },
+    "category": {
+      "type": "string",
+      "enum": ["composition", "exposure", "color", "story", "guideline", "detail", "crop"]
+    },
+    "geometry_type": {
+      "type": "string",
+      "enum": ["bbox", "point", "line", "polygon"]
+    },
+    "coords": {
+      "type": "object",
+      "required": ["coord_space"],
+      "properties": {
+        "x": { "type": "number" },
+        "y": { "type": "number" },
+        "w": { "type": "number" },
+        "h": { "type": "number" },
+        "x1": { "type": "number" },
+        "y1": { "type": "number" },
+        "x2": { "type": "number" },
+        "y2": { "type": "number" },
+        "coord_space": {
+          "type": "string",
+          "enum": ["image_pixels"]
+        }
+      },
+      "additionalProperties": true
+    },
+    "label": { "type": "string" },
+    "message": { "type": "string" },
+    "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+    "related_suggestion_ids": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "additionalProperties": false
+}
+
