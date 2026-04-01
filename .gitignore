@@ -13,4 +13,7 @@ dist/
 .vscode/
 coverage/
 *.log
-
+*.tsbuildinfo
+apps/web/src/**/*.js
+apps/web/src/**/*.js.map
+superpowers/
