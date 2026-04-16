@@ -5,6 +5,16 @@ export default defineConfig({
   plugins: [vue()],
   server: {
     host: "0.0.0.0",
-    port: 5151
+    port: 5151,
+    proxy: {
+      "/api": {
+        target: "http://localhost:8000",
+        changeOrigin: true
+      },
+      "/healthz": {
+        target: "http://localhost:8000",
+        changeOrigin: true
+      }
+    }
   }
 });
