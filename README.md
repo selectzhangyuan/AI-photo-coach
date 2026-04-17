@@ -136,3 +136,53 @@ docker compose -f infra/docker-compose.yml up --build
    [edit_planner.py](/C:/Users/zhangyuan/Documents/New%20project/apps/api/app/services/rules/edit_planner.py)
    [result_composer.py](/C:/Users/zhangyuan/Documents/New%20project/apps/api/app/services/composer/result_composer.py)
 
+## Production Deployment
+
+This repository now includes a production Docker Compose stack that serves the frontend and API from one server IP on port `80`.
+
+### Files
+
+- `infra/docker-compose.prod.yml`
+- `infra/.env.prod.example`
+- `infra/nginx/default.conf`
+- `apps/web/Dockerfile`
+
+### Server commands
+
+```bash
+cd /path/to/AI-photo-coach
+cp infra/.env.prod.example infra/.env.prod
+```
+
+Edit `infra/.env.prod` and replace:
+
+- `SERVER_IP` with your server public IP
+- `POSTGRES_PASSWORD` with a strong password
+- `S3_SECRET_KEY` with a strong password
+
+Start the production stack:
+
+```bash
+docker compose --env-file infra/.env.prod -f infra/docker-compose.prod.yml up --build -d
+```
+
+Check service status:
+
+```bash
+docker compose --env-file infra/.env.prod -f infra/docker-compose.prod.yml ps
+docker compose --env-file infra/.env.prod -f infra/docker-compose.prod.yml logs api --tail 100
+docker compose --env-file infra/.env.prod -f infra/docker-compose.prod.yml logs web --tail 100
+```
+
+Open these URLs in a browser:
+
+- `http://YOUR_SERVER_IP`
+- `http://YOUR_SERVER_IP/healthz`
+
+Update after pulling new code:
+
+```bash
+git pull
+docker compose --env-file infra/.env.prod -f infra/docker-compose.prod.yml up --build -d
+```
+
