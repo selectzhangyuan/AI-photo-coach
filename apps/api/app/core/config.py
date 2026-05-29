@@ -26,7 +26,12 @@ class Settings(BaseSettings):
         "http://localhost:5151,http://127.0.0.1:5151,"
         "http://localhost:8000,http://127.0.0.1:8000"
     )
-    default_user_id: str = "00000000-0000-0000-0000-000000000001"
+
+    # JWT 认证配置
+    jwt_secret_key: str = "change-me-in-production"
+    jwt_algorithm: str = "HS256"
+    access_token_expire_minutes: int = 30
+    refresh_token_expire_days: int = 7
 
     @property
     def cors_origin_list(self) -> list[str]:

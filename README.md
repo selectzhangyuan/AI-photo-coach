@@ -146,8 +146,16 @@ This repository now includes a production Docker Compose stack that serves the f
 - `infra/.env.prod.example`
 - `infra/nginx/default.conf`
 - `apps/web/Dockerfile`
+- `infra/deploy.sh`
 
-### Server commands
+### Prerequisites
+
+- Docker daemon is healthy and `docker info` works
+- `docker compose` is available
+- Port `80` is open in the server firewall / security group
+- Docker image mirrors are configured if the server cannot reliably pull from Docker Hub
+
+### First deployment
 
 ```bash
 cd /path/to/AI-photo-coach
@@ -163,15 +171,26 @@ Edit `infra/.env.prod` and replace:
 Start the production stack:
 
 ```bash
-docker compose --env-file infra/.env.prod -f infra/docker-compose.prod.yml up --build -d
+chmod +x infra/deploy.sh
+./infra/deploy.sh
 ```
 
-Check service status:
+### Routine update
+
+```bash
+cd /path/to/AI-photo-coach
+git pull
+./infra/deploy.sh
+```
+
+### Health checks and logs
 
 ```bash
 docker compose --env-file infra/.env.prod -f infra/docker-compose.prod.yml ps
 docker compose --env-file infra/.env.prod -f infra/docker-compose.prod.yml logs api --tail 100
 docker compose --env-file infra/.env.prod -f infra/docker-compose.prod.yml logs web --tail 100
+docker compose --env-file infra/.env.prod -f infra/docker-compose.prod.yml logs postgres --tail 100
+docker compose --env-file infra/.env.prod -f infra/docker-compose.prod.yml logs minio --tail 100
 ```
 
 Open these URLs in a browser:
@@ -179,10 +198,18 @@ Open these URLs in a browser:
 - `http://YOUR_SERVER_IP`
 - `http://YOUR_SERVER_IP/healthz`
 
-Update after pulling new code:
+### Common operations
 
 ```bash
-git pull
-docker compose --env-file infra/.env.prod -f infra/docker-compose.prod.yml up --build -d
+docker compose --env-file infra/.env.prod -f infra/docker-compose.prod.yml restart
+docker compose --env-file infra/.env.prod -f infra/docker-compose.prod.yml down
+docker compose --env-file infra/.env.prod -f infra/docker-compose.prod.yml up -d
 ```
+
+### Troubleshooting
+
+- If `docker pull` times out against `registry-1.docker.io`, configure Docker registry mirrors and verify with `docker info`.
+- If `docker compose` cannot connect to the daemon, verify `docker.service`, `docker.socket`, and `/run/docker.sock`.
+- If the homepage opens but `/healthz` returns `504`, inspect `api`, `postgres`, and `minio` logs first.
+- If only one service is failing, use `docker compose ... logs <service> --tail 200` to isolate it before changing configuration.
 

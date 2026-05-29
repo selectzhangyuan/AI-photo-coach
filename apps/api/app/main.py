@@ -2,10 +2,11 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import settings
-from app.core.database import SessionLocal, init_db
-from app.deps import bootstrap_default_user
+from app.core.database import init_db
 from app.modules.analysis.router import router as analysis_router
+from app.modules.auth.router import router as auth_router
 from app.modules.images.router import router as images_router
+from app.modules.users.router import router as users_router
 
 app = FastAPI(title=settings.app_name)
 
@@ -19,16 +20,13 @@ app.add_middleware(
 
 app.include_router(images_router, prefix=settings.api_prefix)
 app.include_router(analysis_router, prefix=settings.api_prefix)
+app.include_router(auth_router, prefix=settings.api_prefix)
+app.include_router(users_router, prefix=settings.api_prefix)
 
 
 @app.on_event("startup")
 def on_startup() -> None:
     init_db()
-    db = SessionLocal()
-    try:
-        bootstrap_default_user(db)
-    finally:
-        db.close()
 
 
 @app.get("/healthz")

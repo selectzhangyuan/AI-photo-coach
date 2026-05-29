@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 
 from app.core.config import settings
 from app.core.database import get_db
-from app.deps import ensure_user, get_current_user_id
+from app.deps import get_current_user_id
 from app.models.analysis_result import AnalysisResult
 from app.models.analysis_task import AnalysisTask
 from app.models.image_asset import ImageAsset
@@ -48,7 +48,6 @@ def create_task(
     db: Session = Depends(get_db),
     user_id: uuid.UUID = Depends(get_current_user_id),
 ) -> CreateAnalysisTaskResponse:
-    ensure_user(db, user_id)
 
     image = db.get(ImageAsset, payload.image_id)
     if image is None:
@@ -96,7 +95,6 @@ def get_history(
     db: Session = Depends(get_db),
     user_id: uuid.UUID = Depends(get_current_user_id),
 ) -> AnalysisHistoryResponse:
-    ensure_user(db, user_id)
 
     tasks = db.execute(
         select(AnalysisTask)

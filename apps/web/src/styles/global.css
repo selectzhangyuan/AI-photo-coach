@@ -269,7 +269,7 @@ body::before {
   border-radius: 16px;
   box-shadow: var(--shadow-soft);
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   padding: 6px;
   backdrop-filter: blur(10px);
 }

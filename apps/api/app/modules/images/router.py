@@ -9,7 +9,7 @@ from PIL import Image, UnidentifiedImageError
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
-from app.deps import ensure_user, get_current_user_id
+from app.deps import get_current_user_id
 from app.models.image_asset import ImageAsset
 from app.schemas.image import ImageUploadResponse
 from app.services.storage.s3_storage import get_storage_service
@@ -36,7 +36,6 @@ async def upload_image(
     except UnidentifiedImageError as exc:
         raise HTTPException(status_code=400, detail="Invalid image file") from exc
 
-    ensure_user(db, user_id)
 
     extension = Path(file.filename or "").suffix.lower()
     if not extension:
