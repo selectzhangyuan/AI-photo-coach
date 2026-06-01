@@ -10,12 +10,19 @@
 - [apps/api/app/models/user.py](file://apps/api/app/models/user.py)
 - [apps/api/app/deps.py](file://apps/api/app/deps.py)
 - [apps/api/app/modules/users/router.py](file://apps/api/app/modules/users/router.py)
-- [apps/api/app/schemas/user.py](file://apps/api/app/schemas/user.py)
-- [apps/api/app/main.py](file://apps/api/app/main.py)
 - [apps/api/tests/test_auth.py](file://apps/api/tests/test_auth.py)
 - [apps/web/src/api/auth.ts](file://apps/web/src/api/auth.ts)
 - [apps/web/src/stores/auth.ts](file://apps/web/src/stores/auth.ts)
+- [apps/api/app/main.py](file://apps/api/app/main.py)
 </cite>
+
+## 更新摘要
+**变更内容**
+- 新增完整的认证API端点实现，包括注册、登录、令牌刷新、邮箱验证、密码重置等功能
+- 完善JWT令牌生成、验证和刷新机制的详细说明
+- 更新认证中间件和权限控制策略
+- 增强安全考虑和客户端集成指南
+- 添加详细的测试用例和错误处理场景
 
 ## 目录
 1. [简介](#简介)
@@ -30,7 +37,7 @@
 10. [附录](#附录)
 
 ## 简介
-本文件为“AI摄影教练认证系统”的认证API文档，覆盖用户注册、登录、登出、令牌刷新、邮箱验证、密码重置等完整流程。文档详细说明每个接口的HTTP方法、URL路径、请求参数、响应格式与状态码，并解释JWT令牌的生成、验证与刷新机制。同时提供认证中间件的使用方式、权限控制策略、安全注意事项以及客户端集成指南与常见问题解决方案。
+本文件为"AI摄影教练认证系统"的认证API文档，覆盖用户注册、登录、登出、令牌刷新、邮箱验证、密码重置等完整流程。文档详细说明每个接口的HTTP方法、URL路径、请求参数、响应格式与状态码，并解释JWT令牌的生成、验证与刷新机制。同时提供认证中间件的使用方式、权限控制策略、安全注意事项以及客户端集成指南与常见问题解决方案。
 
 ## 项目结构
 认证相关代码主要位于后端FastAPI应用中，前端Vue应用通过HTTP客户端调用认证接口。核心目录与文件如下：
@@ -43,7 +50,6 @@
   - 用户模型：apps/api/app/models/user.py
   - 全局依赖（认证中间件）：apps/api/app/deps.py
   - 用户资料路由：apps/api/app/modules/users/router.py
-  - 用户资料Schema：apps/api/app/schemas/user.py
   - 应用入口与路由挂载：apps/api/app/main.py
   - 测试：apps/api/tests/test_auth.py
 - 前端
@@ -77,7 +83,7 @@ I --> A
 J --> I
 ```
 
-图表来源
+**图表来源**
 - [apps/api/app/main.py:1-36](file://apps/api/app/main.py#L1-L36)
 - [apps/api/app/modules/auth/router.py:1-93](file://apps/api/app/modules/auth/router.py#L1-L93)
 - [apps/api/app/modules/auth/service.py:1-145](file://apps/api/app/modules/auth/service.py#L1-L145)
@@ -89,7 +95,7 @@ J --> I
 - [apps/web/src/api/auth.ts:1-56](file://apps/web/src/api/auth.ts#L1-L56)
 - [apps/web/src/stores/auth.ts:1-41](file://apps/web/src/stores/auth.ts#L1-L41)
 
-章节来源
+**章节来源**
 - [apps/api/app/main.py:1-36](file://apps/api/app/main.py#L1-L36)
 - [apps/api/app/modules/auth/router.py:1-93](file://apps/api/app/modules/auth/router.py#L1-L93)
 
@@ -102,7 +108,7 @@ J --> I
 - 认证中间件：从Authorization Bearer中提取并验证JWT，解析用户ID并注入到依赖。
 - 前端集成：HTTP客户端封装认证请求，Pinia状态持久化保存令牌并在请求头中携带。
 
-章节来源
+**章节来源**
 - [apps/api/app/modules/auth/router.py:21-93](file://apps/api/app/modules/auth/router.py#L21-L93)
 - [apps/api/app/modules/auth/service.py:21-145](file://apps/api/app/modules/auth/service.py#L21-L145)
 - [apps/api/app/core/security.py:12-72](file://apps/api/app/core/security.py#L12-L72)
@@ -143,7 +149,7 @@ Service-->>Router : "返回{access_token, refresh_token}"
 Router-->>Client : "200 OK + TokenResponse"
 ```
 
-图表来源
+**图表来源**
 - [apps/api/app/modules/auth/router.py:24-46](file://apps/api/app/modules/auth/router.py#L24-L46)
 - [apps/api/app/modules/auth/service.py:27-76](file://apps/api/app/modules/auth/service.py#L27-L76)
 - [apps/api/app/core/security.py:22-47](file://apps/api/app/core/security.py#L22-L47)
@@ -188,7 +194,7 @@ Router-->>Client : "200 OK + TokenResponse"
     - 成功响应：{"message": "Password reset successfully"}
     - 失败场景：无效或过期令牌(400)
 
-章节来源
+**章节来源**
 - [apps/api/app/modules/auth/router.py:21-93](file://apps/api/app/modules/auth/router.py#L21-L93)
 - [apps/api/app/schemas/auth.py:5-37](file://apps/api/app/schemas/auth.py#L5-L37)
 - [apps/api/tests/test_auth.py:48-191](file://apps/api/tests/test_auth.py#L48-L191)
@@ -222,12 +228,12 @@ IssueAT2 --> IssueRT2["签发刷新令牌"]
 IssueRT2 --> Done2(["完成"])
 ```
 
-图表来源
+**图表来源**
 - [apps/api/app/modules/auth/service.py:27-76](file://apps/api/app/modules/auth/service.py#L27-L76)
 - [apps/api/app/core/security.py:22-47](file://apps/api/app/core/security.py#L22-L47)
 - [apps/api/app/models/user.py:12-28](file://apps/api/app/models/user.py#L12-L28)
 
-章节来源
+**章节来源**
 - [apps/api/app/modules/auth/service.py:21-145](file://apps/api/app/modules/auth/service.py#L21-L145)
 - [apps/api/app/core/security.py:12-72](file://apps/api/app/core/security.py#L12-L72)
 - [apps/api/app/core/config.py:30-35](file://apps/api/app/core/config.py#L30-L35)
@@ -256,12 +262,12 @@ DB-->>Deps : "User对象"
 Deps-->>Client : "注入当前用户(若有效)"
 ```
 
-图表来源
+**图表来源**
 - [apps/api/app/deps.py:15-34](file://apps/api/app/deps.py#L15-L34)
 - [apps/api/app/core/security.py:49-72](file://apps/api/app/core/security.py#L49-L72)
 - [apps/api/app/models/user.py:12-28](file://apps/api/app/models/user.py#L12-L28)
 
-章节来源
+**章节来源**
 - [apps/api/app/deps.py:1-41](file://apps/api/app/deps.py#L1-L41)
 - [apps/api/app/modules/users/router.py:17-26](file://apps/api/app/modules/users/router.py#L17-L26)
 
@@ -295,11 +301,11 @@ API-->>HTTP : "返回数据或401"
 HTTP-->>Web : "响应结果"
 ```
 
-图表来源
+**图表来源**
 - [apps/web/src/api/auth.ts:29-55](file://apps/web/src/api/auth.ts#L29-L55)
 - [apps/web/src/stores/auth.ts:12-25](file://apps/web/src/stores/auth.ts#L12-L25)
 
-章节来源
+**章节来源**
 - [apps/web/src/api/auth.ts:1-56](file://apps/web/src/api/auth.ts#L1-L56)
 - [apps/web/src/stores/auth.ts:1-41](file://apps/web/src/stores/auth.ts#L1-L41)
 
@@ -328,7 +334,7 @@ Front["web/api/auth.ts"] --> Router
 FrontStore["web/stores/auth.ts"] --> Front
 ```
 
-图表来源
+**图表来源**
 - [apps/api/app/modules/auth/router.py:1-93](file://apps/api/app/modules/auth/router.py#L1-L93)
 - [apps/api/app/modules/auth/service.py:1-145](file://apps/api/app/modules/auth/service.py#L1-L145)
 - [apps/api/app/core/security.py:1-72](file://apps/api/app/core/security.py#L1-L72)
@@ -338,7 +344,7 @@ FrontStore["web/stores/auth.ts"] --> Front
 - [apps/web/src/api/auth.ts:1-56](file://apps/web/src/api/auth.ts#L1-L56)
 - [apps/web/src/stores/auth.ts:1-41](file://apps/web/src/stores/auth.ts#L1-L41)
 
-章节来源
+**章节来源**
 - [apps/api/app/modules/auth/router.py:1-93](file://apps/api/app/modules/auth/router.py#L1-L93)
 - [apps/api/app/modules/auth/service.py:1-145](file://apps/api/app/modules/auth/service.py#L1-L145)
 - [apps/api/app/core/security.py:1-72](file://apps/api/app/core/security.py#L1-L72)
@@ -358,8 +364,6 @@ FrontStore["web/stores/auth.ts"] --> Front
 - 令牌轮换
   - 刷新令牌有效期较长，但访问令牌短效可降低泄露风险。
 
-[本节为通用指导，无需特定文件来源]
-
 ## 故障排查指南
 - 常见错误与解决
   - 400 Bad Request：邮箱验证或密码重置令牌无效或过期。
@@ -373,15 +377,13 @@ FrontStore["web/stores/auth.ts"] --> Front
   - 令牌过期未及时刷新。
   - 登出后未清理本地存储导致仍携带旧令牌。
 
-章节来源
+**章节来源**
 - [apps/api/app/modules/auth/service.py:98-140](file://apps/api/app/modules/auth/service.py#L98-L140)
 - [apps/api/app/modules/auth/router.py:33-35](file://apps/api/app/modules/auth/router.py#L33-L35)
 - [apps/api/tests/test_auth.py:48-191](file://apps/api/tests/test_auth.py#L48-L191)
 
 ## 结论
 该认证系统提供了完整的用户生命周期管理：注册、登录、令牌刷新、登出、邮箱验证与密码重置。通过bcrypt与JWT确保了密码安全与会话管理的安全性。前端通过Pinia与HTTP封装实现了便捷的令牌持久化与请求头注入。建议在生产环境中强化安全配置（如HTTPS、CSRF防护、令牌吊销策略）并完善邮箱验证与密码重置的邮件通知机制。
-
-[本节为总结，无需特定文件来源]
 
 ## 附录
 
@@ -494,7 +496,7 @@ FrontStore["web/stores/auth.ts"] --> Front
     - 成功：200 OK
       - Body: {"message":"Password reset successfully"}
 
-章节来源
+**章节来源**
 - [apps/api/app/modules/auth/router.py:24-92](file://apps/api/app/modules/auth/router.py#L24-L92)
 - [apps/api/app/schemas/auth.py:5-37](file://apps/api/app/schemas/auth.py#L5-L37)
 - [apps/api/tests/test_auth.py:48-191](file://apps/api/tests/test_auth.py#L48-L191)
@@ -511,8 +513,6 @@ FrontStore["web/stores/auth.ts"] --> Front
 - 邮箱验证与密码重置
   - 验证与重置令牌应具备合理有效期，并在日志中谨慎记录（生产环境避免敏感信息输出）。
 
-[本节为通用指导，无需特定文件来源]
-
 ### 客户端集成步骤
 - 初始化
   - 在应用启动时读取localStorage中的access_token与refresh_token。
@@ -524,6 +524,27 @@ FrontStore["web/stores/auth.ts"] --> Front
 - 登出
   - 调用登出接口，清理本地存储与状态。
 
-章节来源
+**章节来源**
 - [apps/web/src/api/auth.ts:29-55](file://apps/web/src/api/auth.ts#L29-L55)
 - [apps/web/src/stores/auth.ts:12-25](file://apps/web/src/stores/auth.ts#L12-L25)
+
+### 测试用例与验证
+- 注册测试
+  - 成功注册：返回200状态码，包含access_token和refresh_token
+  - 重复邮箱注册：返回409状态码
+  - 无效邮箱格式：返回422状态码
+  - 密码长度不足8位：返回422状态码
+- 登录测试
+  - 正确凭证：返回200状态码和令牌对
+  - 错误密码：返回401状态码
+  - 不存在的邮箱：返回401状态码
+- 令牌刷新测试
+  - 有效刷新令牌：返回新的access_token
+  - 无效刷新令牌：返回401状态码
+- 密码重置测试
+  - 已注册邮箱：返回200状态码（开发模式记录日志）
+  - 不存在的邮箱：返回200状态码（不泄露信息）
+  - 无效重置令牌：返回400状态码
+
+**章节来源**
+- [apps/api/tests/test_auth.py:1-191](file://apps/api/tests/test_auth.py#L1-L191)

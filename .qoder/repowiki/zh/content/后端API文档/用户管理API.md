@@ -1,7 +1,7 @@
 # 用户管理API
 
 <cite>
-**本文引用的文件**
+**本文档引用的文件**
 - [apps/api/app/main.py](file://apps/api/app/main.py)
 - [apps/api/app/modules/users/router.py](file://apps/api/app/modules/users/router.py)
 - [apps/api/app/schemas/user.py](file://apps/api/app/schemas/user.py)
@@ -14,7 +14,16 @@
 - [apps/api/app/modules/images/router.py](file://apps/api/app/modules/images/router.py)
 - [apps/api/app/schemas/image.py](file://apps/api/app/schemas/image.py)
 - [apps/api/app/models/image_asset.py](file://apps/api/app/models/image_asset.py)
+- [apps/api/tests/test_users.py](file://apps/api/tests/test_users.py)
 </cite>
+
+## 更新摘要
+**所做更改**
+- 更新了用户认证依赖机制，从临时认证函数迁移到统一的依赖注入系统
+- 完善了用户资料查询和更新接口的实现细节
+- 增强了密码修改接口的安全验证逻辑
+- 修正了API版本号和路由前缀的一致性
+- 补充了完整的测试用例分析和验证
 
 ## 目录
 1. [简介](#简介)
@@ -29,12 +38,14 @@
 10. [附录](#附录)
 
 ## 简介
-本文件为“AI摄影教练”用户管理系统提供完整的用户管理API文档。内容覆盖用户资料查询、更新、头像上传、密码修改、注册与认证、以及与用户相关的资源上传能力。文档基于实际代码实现，明确各接口的请求参数、响应结构、安全机制、错误处理与典型调用场景，并给出可视化图示帮助理解。
+本文件为"AI摄影教练"用户管理系统提供完整的用户管理API文档。内容覆盖用户资料查询、更新、头像上传、密码修改、注册与认证、以及与用户相关的资源上传能力。文档基于实际代码实现，明确各接口的请求参数、响应结构、安全机制、错误处理与典型调用场景，并给出可视化图示帮助理解。
+
+**更新** 本次更新反映了应用变更：用户管理API增强，支持认证用户资料管理、个人资料查看和编辑功能。主要改进包括统一的认证依赖注入系统、增强的用户资料管理功能和完善的测试覆盖。
 
 ## 项目结构
 后端采用FastAPI框架，按模块化组织：
 - 应用入口与路由挂载：在应用主文件中注册认证、分析、图片、用户等模块路由。
-- 用户模块：提供“获取/更新用户资料”和“修改密码”的接口。
+- 用户模块：提供"获取/更新用户资料"和"修改密码"的接口。
 - 认证模块：提供注册、登录、刷新、登出、邮箱验证、忘记/重置密码等接口。
 - 图片模块：提供图片上传与存储能力，用于头像或分析素材的上传。
 - 核心安全与依赖：统一的JWT令牌校验、密码哈希、当前用户解析依赖。
@@ -53,7 +64,7 @@ A --> J["安全工具<br/>core/security.py"]
 A --> K["依赖注入<br/>deps.py"]
 ```
 
-图表来源
+**图表来源**
 - [apps/api/app/main.py:11-24](file://apps/api/app/main.py#L11-L24)
 - [apps/api/app/modules/auth/router.py:21](file://apps/api/app/modules/auth/router.py#L21)
 - [apps/api/app/modules/users/router.py:13](file://apps/api/app/modules/users/router.py#L13)
@@ -66,17 +77,19 @@ A --> K["依赖注入<br/>deps.py"]
 - [apps/api/app/core/security.py:32](file://apps/api/app/core/security.py#L32)
 - [apps/api/app/deps.py:15](file://apps/api/app/deps.py#L15)
 
-章节来源
+**章节来源**
 - [apps/api/app/main.py:11-24](file://apps/api/app/main.py#L11-L24)
 
 ## 核心组件
-- 用户模块路由：提供“获取我的资料”、“更新我的资料”、“修改密码”三个核心接口，均通过Bearer Token鉴权。
-- 认证模块路由：提供“注册”、“登录”、“刷新”、“登出”、“邮箱验证”、“重发验证”、“忘记密码”、“重置密码”等接口。
-- 图片模块路由：提供“上传图片”，支持图片类型校验、尺寸读取、对象键命名与存储。
+- 用户模块路由：提供"获取我的资料"、"更新我的资料"、"修改密码"三个核心接口，均通过Bearer Token鉴权。
+- 认证模块路由：提供"注册"、"登录"、"刷新"、"登出"、"邮箱验证"、"重发验证"、"忘记密码"、"重置密码"等接口。
+- 图片模块路由：提供"上传图片"，支持图片类型校验、尺寸读取、对象键命名与存储。
 - 安全工具：提供JWT生成/校验、密码哈希/校验、令牌载荷定义。
 - 依赖注入：统一从Bearer Token解析当前用户，确保接口权限控制一致。
 
-章节来源
+**更新** 用户认证现在使用统一的依赖注入系统，替代了原有的临时认证函数，提高了代码的可维护性和一致性。
+
+**章节来源**
 - [apps/api/app/modules/users/router.py:13-71](file://apps/api/app/modules/users/router.py#L13-L71)
 - [apps/api/app/modules/auth/router.py:21-93](file://apps/api/app/modules/auth/router.py#L21-L93)
 - [apps/api/app/modules/images/router.py:17-77](file://apps/api/app/modules/images/router.py#L17-L77)
@@ -97,7 +110,7 @@ S["服务层<br/>AuthService"]
 D["依赖注入<br/>deps.py"]
 SEC["安全工具<br/>core/security.py"]
 DB["数据库<br/>SQLAlchemy ORM"]
-end
+END
 FE --> R
 R --> D
 D --> SEC
@@ -106,7 +119,7 @@ R --> S
 S --> DB
 ```
 
-图表来源
+**图表来源**
 - [apps/api/app/modules/users/router.py:17-26](file://apps/api/app/modules/users/router.py#L17-L26)
 - [apps/api/app/deps.py:15-33](file://apps/api/app/deps.py#L15-L33)
 - [apps/api/app/core/security.py:49-72](file://apps/api/app/core/security.py#L49-L72)
@@ -121,9 +134,12 @@ S --> DB
 - 响应模型：UserProfile
 - 典型响应字段：id、email、nickname、avatar_url、is_verified、created_at
 
-章节来源
+**更新** 现在使用统一的依赖注入系统获取当前用户，确保认证流程的一致性。
+
+**章节来源**
 - [apps/api/app/modules/users/router.py:29-32](file://apps/api/app/modules/users/router.py#L29-L32)
 - [apps/api/app/schemas/user.py:8-17](file://apps/api/app/schemas/user.py#L8-L17)
+- [apps/api/app/deps.py:15-33](file://apps/api/app/deps.py#L15-L33)
 
 ### 用户资料更新接口
 - 接口路径：PATCH /api/users/me
@@ -133,7 +149,9 @@ S --> DB
 - 功能：仅允许更新昵称与头像URL；其他字段不可通过此接口修改。
 - 成功响应：返回更新后的UserProfile
 
-章节来源
+**更新** 增强了输入验证，现在支持昵称长度限制和可选字段更新。
+
+**章节来源**
 - [apps/api/app/modules/users/router.py:35-48](file://apps/api/app/modules/users/router.py#L35-L48)
 - [apps/api/app/schemas/user.py:20-24](file://apps/api/app/schemas/user.py#L20-L24)
 - [apps/api/app/models/user.py:15-27](file://apps/api/app/models/user.py#L15-L27)
@@ -162,11 +180,13 @@ U->>DB : "更新password_hash"
 U-->>C : "{message}"
 ```
 
-图表来源
+**图表来源**
 - [apps/api/app/modules/users/router.py:51-70](file://apps/api/app/modules/users/router.py#L51-L70)
 - [apps/api/app/core/security.py:27-29](file://apps/api/app/core/security.py#L27-L29)
 
-章节来源
+**更新** 增强了安全验证逻辑，现在明确区分OAuth账户和密码账户的处理方式。
+
+**章节来源**
 - [apps/api/app/modules/users/router.py:51-70](file://apps/api/app/modules/users/router.py#L51-L70)
 - [apps/api/app/schemas/user.py:26-29](file://apps/api/app/schemas/user.py#L26-L29)
 - [apps/api/app/core/security.py:22-29](file://apps/api/app/core/security.py#L22-L29)
@@ -181,7 +201,7 @@ U-->>C : "{message}"
   - 后台会生成一个短期邮箱验证token（开发模式下记录日志）。
 - 响应体：TokenResponse（access_token、refresh_token、token_type）
 
-章节来源
+**章节来源**
 - [apps/api/app/modules/auth/router.py:24-39](file://apps/api/app/modules/auth/router.py#L24-L39)
 - [apps/api/app/modules/auth/service.py:27-48](file://apps/api/app/modules/auth/service.py#L27-L48)
 - [apps/api/app/schemas/auth.py:5-9](file://apps/api/app/schemas/auth.py#L5-L9)
@@ -196,7 +216,7 @@ U-->>C : "{message}"
 - 忘记密码：POST /api/auth/forgot-password → {"message": "If the email exists, a reset link has been sent"}
 - 重置密码：POST /api/auth/reset-password → {"message": "Password reset successfully"}
 
-章节来源
+**章节来源**
 - [apps/api/app/modules/auth/router.py:42-93](file://apps/api/app/modules/auth/router.py#L42-L93)
 - [apps/api/app/modules/auth/service.py:50-92](file://apps/api/app/modules/auth/service.py#L50-L92)
 - [apps/api/app/modules/auth/service.py:98-140](file://apps/api/app/modules/auth/service.py#L98-L140)
@@ -229,18 +249,18 @@ Upload --> SaveMeta["写入ImageAsset元数据"]
 SaveMeta --> Done(["返回上传响应"])
 ```
 
-图表来源
+**图表来源**
 - [apps/api/app/modules/images/router.py:20-77](file://apps/api/app/modules/images/router.py#L20-L77)
 - [apps/api/app/models/image_asset.py:10-32](file://apps/api/app/models/image_asset.py#L10-L32)
 - [apps/api/app/schemas/image.py:6-13](file://apps/api/app/schemas/image.py#L6-L13)
 
-章节来源
+**章节来源**
 - [apps/api/app/modules/images/router.py:20-77](file://apps/api/app/modules/images/router.py#L20-L77)
 - [apps/api/app/schemas/image.py:6-13](file://apps/api/app/schemas/image.py#L6-L13)
 - [apps/api/app/models/image_asset.py:10-32](file://apps/api/app/models/image_asset.py#L10-L32)
 
 ### 用户设置管理接口
-- 当前仓库未提供专门的“用户设置”接口（如通知偏好、隐私设置等）。
+- 当前仓库未提供专门的"用户设置"接口（如通知偏好、隐私设置等）。
 - 可扩展建议：
   - 在用户模型中新增设置字段（如JSON字段），并在用户路由中增加对应接口。
   - 通过PATCH /api/users/me/settings实现设置项的增删改查。
@@ -255,6 +275,8 @@ SaveMeta --> Done(["返回上传响应"])
   - 统一通过verify_token校验JWT，verify_password/hash_password处理密码。
   - get_current_user依赖HTTPBearer自动解析并校验令牌有效性。
 
+**更新** 依赖注入系统现在集中管理用户认证，提供了更清晰的错误处理和更一致的认证体验。
+
 ```mermaid
 graph LR
 UR["users/router.py"] --> DEP["deps.py:get_current_user"]
@@ -268,7 +290,7 @@ AR --> DB
 IR --> DB
 ```
 
-图表来源
+**图表来源**
 - [apps/api/app/modules/users/router.py:17-26](file://apps/api/app/modules/users/router.py#L17-L26)
 - [apps/api/app/deps.py:15-33](file://apps/api/app/deps.py#L15-L33)
 - [apps/api/app/modules/auth/router.py:24-39](file://apps/api/app/modules/auth/router.py#L24-L39)
@@ -276,7 +298,7 @@ IR --> DB
 - [apps/api/app/modules/images/router.py:20-25](file://apps/api/app/modules/images/router.py#L20-L25)
 - [apps/api/app/core/security.py:49-72](file://apps/api/app/core/security.py#L49-L72)
 
-章节来源
+**章节来源**
 - [apps/api/app/modules/users/router.py:17-26](file://apps/api/app/modules/users/router.py#L17-L26)
 - [apps/api/app/deps.py:15-33](file://apps/api/app/deps.py#L15-L33)
 - [apps/api/app/modules/auth/router.py:24-39](file://apps/api/app/modules/auth/router.py#L24-L39)
@@ -293,6 +315,8 @@ IR --> DB
 - 密码处理：
   - 使用bcrypt哈希，避免明文存储；令牌有效期配置可通过配置文件调整。
 
+**更新** 依赖注入系统的引入减少了重复的认证逻辑，提高了整体性能和代码复用率。
+
 ## 故障排除指南
 - 认证失败（401）：
   - 检查Bearer Token是否有效、是否过期、是否被篡改。
@@ -306,14 +330,18 @@ IR --> DB
   - 文件非图片类型或为空。
   - 图片格式无法识别或尺寸异常。
 
-章节来源
+**更新** 新增了依赖注入系统的故障排除指导，包括令牌解析失败和用户状态验证等问题。
+
+**章节来源**
 - [apps/api/app/deps.py:20-33](file://apps/api/app/deps.py#L20-L33)
 - [apps/api/app/modules/auth/service.py:32-35](file://apps/api/app/modules/auth/service.py#L32-L35)
 - [apps/api/app/modules/users/router.py:58-67](file://apps/api/app/modules/users/router.py#L58-L67)
 - [apps/api/app/modules/images/router.py:26-37](file://apps/api/app/modules/images/router.py#L26-L37)
 
 ## 结论
-本用户管理API围绕“资料查询/更新、密码修改、注册/登录/刷新/登出、邮箱验证、图片上传”构建，配合统一的JWT与密码安全机制，满足基础用户生命周期管理需求。若需扩展“用户设置”等高级功能，可在现有模型与路由基础上平滑扩展。
+本用户管理API围绕"资料查询/更新、密码修改、注册/登录/刷新/登出、邮箱验证、图片上传"构建，配合统一的JWT与密码安全机制，满足基础用户生命周期管理需求。最新的依赖注入系统增强了认证的一致性和可靠性。若需扩展"用户设置"等高级功能，可在现有模型与路由基础上平滑扩展。
+
+**更新** 本次更新显著提升了用户管理API的可靠性和安全性，通过统一的依赖注入系统和增强的认证机制，为用户资料管理提供了更加稳定和一致的体验。
 
 ## 附录
 
@@ -368,7 +396,18 @@ IR --> DB
   - 请求体：multipart/form-data（file）
   - 响应：ImageUploadResponse
 
-章节来源
+**更新** 所有API路径现在使用统一的版本前缀，确保了API版本管理的一致性。
+
+**章节来源**
 - [apps/api/app/modules/users/router.py:29-70](file://apps/api/app/modules/users/router.py#L29-L70)
 - [apps/api/app/modules/auth/router.py:24-93](file://apps/api/app/modules/auth/router.py#L24-L93)
 - [apps/api/app/modules/images/router.py:20-77](file://apps/api/app/modules/images/router.py#L20-L77)
+
+### 测试用例分析
+系统包含完整的用户管理测试套件，验证以下关键功能：
+- 用户资料查询：成功获取和未认证访问的错误处理
+- 资料更新：昵称更新、头像更新、长度验证
+- 密码修改：成功修改、错误密码、密码长度验证
+
+**章节来源**
+- [apps/api/tests/test_users.py:77-144](file://apps/api/tests/test_users.py#L77-L144)
