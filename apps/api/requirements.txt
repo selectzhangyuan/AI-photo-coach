@@ -11,6 +11,7 @@ Pillow==11.3.0
 python-jose[cryptography]==3.3.0
 passlib[bcrypt]==1.7.4
 pydantic[email]==2.11.0
+alembic==1.16.3
 pytest==8.3.5
 pytest-asyncio==0.25.3
 httpx==0.28.1
