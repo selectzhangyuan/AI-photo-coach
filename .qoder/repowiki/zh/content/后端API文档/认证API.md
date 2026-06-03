@@ -1,7 +1,7 @@
 # 认证API
 
 <cite>
-**本文引用的文件**
+**本文档引用的文件**
 - [apps/api/app/modules/auth/router.py](file://apps/api/app/modules/auth/router.py)
 - [apps/api/app/modules/auth/service.py](file://apps/api/app/modules/auth/service.py)
 - [apps/api/app/schemas/auth.py](file://apps/api/app/schemas/auth.py)
@@ -17,6 +17,12 @@
 - [apps/api/app/schemas/user.py](file://apps/api/app/schemas/user.py)
 </cite>
 
+## 更新摘要
+**所做更改**
+- 更新了前端注册参数类型定义，从Record<string, string>改为RegisterParams接口
+- 增强了类型安全性和IDE支持
+- 更新了相关API文档中的类型说明
+
 ## 目录
 1. [简介](#简介)
 2. [项目结构](#项目结构)
@@ -30,7 +36,7 @@
 10. [附录](#附录)
 
 ## 简介
-本文件为“AI摄影教练”项目的认证API详细文档，覆盖用户注册、登录、令牌刷新、登出、邮箱验证、忘记/重置密码等完整认证流程。文档重点说明：
+本文件为"AI摄影教练"项目的认证API详细文档，覆盖用户注册、登录、令牌刷新、登出、邮箱验证、忘记/重置密码等完整认证流程。文档重点说明：
 - HTTP端点定义（方法、路径、请求体、响应体）
 - JWT令牌生成、验证与刷新机制
 - 用户信息校验规则与错误处理
@@ -80,7 +86,7 @@ W1 --> H
 W2 --> W1
 ```
 
-图表来源
+**图表来源**
 - [apps/api/app/main.py:1-36](file://apps/api/app/main.py#L1-L36)
 - [apps/api/app/modules/auth/router.py:1-93](file://apps/api/app/modules/auth/router.py#L1-L93)
 - [apps/api/app/modules/auth/service.py:1-145](file://apps/api/app/modules/auth/service.py#L1-L145)
@@ -92,7 +98,7 @@ W2 --> W1
 - [apps/web/src/api/auth.ts:1-56](file://apps/web/src/api/auth.ts#L1-L56)
 - [apps/web/src/stores/auth.ts:1-41](file://apps/web/src/stores/auth.ts#L1-L41)
 
-章节来源
+**章节来源**
 - [apps/api/app/main.py:1-36](file://apps/api/app/main.py#L1-L36)
 - [apps/api/app/modules/auth/router.py:1-93](file://apps/api/app/modules/auth/router.py#L1-L93)
 
@@ -115,7 +121,7 @@ W2 --> W1
 - 数据模型
   - 用户表字段与约束（邮箱唯一、是否激活/验证）
 
-章节来源
+**章节来源**
 - [apps/api/app/modules/auth/router.py:24-92](file://apps/api/app/modules/auth/router.py#L24-L92)
 - [apps/api/app/modules/auth/service.py:27-140](file://apps/api/app/modules/auth/service.py#L27-L140)
 - [apps/api/app/core/security.py:22-72](file://apps/api/app/core/security.py#L22-L72)
@@ -123,7 +129,7 @@ W2 --> W1
 - [apps/api/app/models/user.py:12-27](file://apps/api/app/models/user.py#L12-L27)
 
 ## 架构总览
-认证系统采用“路由-服务-安全工具-数据模型”的分层设计，配合FastAPI的依赖注入与中间件机制，实现端到端的认证流程。
+认证系统采用"路由-服务-安全工具-数据模型"的分层设计，配合FastAPI的依赖注入与中间件机制，实现端到端的认证流程。
 
 ```mermaid
 sequenceDiagram
@@ -146,7 +152,7 @@ Service-->>Router : "返回TokenResponse"
 Router-->>Client : "access_token, refresh_token"
 ```
 
-图表来源
+**图表来源**
 - [apps/api/app/modules/auth/router.py:24-46](file://apps/api/app/modules/auth/router.py#L24-L46)
 - [apps/api/app/modules/auth/service.py:27-75](file://apps/api/app/modules/auth/service.py#L27-L75)
 - [apps/api/app/core/security.py:32-46](file://apps/api/app/core/security.py#L32-L46)
@@ -205,7 +211,7 @@ Router-->>Client : "access_token, refresh_token"
     - 响应：通用消息
     - 行为：验证token并更新密码
 
-章节来源
+**章节来源**
 - [apps/api/app/modules/auth/router.py:24-92](file://apps/api/app/modules/auth/router.py#L24-L92)
 - [apps/api/app/schemas/auth.py:5-37](file://apps/api/app/schemas/auth.py#L5-L37)
 
@@ -225,7 +231,7 @@ Router-->>Client : "access_token, refresh_token"
   - 发送重置token（开发模式记录日志）
   - 验证token并更新密码
 
-章节来源
+**章节来源**
 - [apps/api/app/modules/auth/service.py:27-140](file://apps/api/app/modules/auth/service.py#L27-L140)
 
 ### 安全工具与JWT机制
@@ -244,7 +250,7 @@ Router-->>Client : "access_token, refresh_token"
   - 解码并校验签名
   - 处理过期与无效token异常
 
-章节来源
+**章节来源**
 - [apps/api/app/core/security.py:22-72](file://apps/api/app/core/security.py#L22-L72)
 - [apps/api/app/core/config.py:30-34](file://apps/api/app/core/config.py#L30-L34)
 
@@ -257,7 +263,7 @@ Router-->>Client : "access_token, refresh_token"
   - 用户资料端点使用自定义依赖获取当前用户
   - 认证依赖可复用到其他受保护端点
 
-章节来源
+**章节来源**
 - [apps/api/app/deps.py:15-33](file://apps/api/app/deps.py#L15-L33)
 - [apps/api/app/modules/users/router.py:17-26](file://apps/api/app/modules/users/router.py#L17-L26)
 
@@ -271,7 +277,7 @@ Router-->>Client : "access_token, refresh_token"
   - is_verified：默认false
   - created_at、updated_at：时间戳
 
-章节来源
+**章节来源**
 - [apps/api/app/models/user.py:12-27](file://apps/api/app/models/user.py#L12-L27)
 
 ### 前端交互与状态管理
@@ -281,7 +287,9 @@ Router-->>Client : "access_token, refresh_token"
   - 存储access_token与refresh_token
   - 清理时移除本地存储
 
-章节来源
+**更新** 前端注册参数类型已从Record<string, string>改进为RegisterParams接口，提供更严格的类型定义和更好的IDE支持
+
+**章节来源**
 - [apps/web/src/api/auth.ts:29-55](file://apps/web/src/api/auth.ts#L29-L55)
 - [apps/web/src/stores/auth.ts:12-25](file://apps/web/src/stores/auth.ts#L12-L25)
 
@@ -304,7 +312,7 @@ UsersRouter["users/router.py"] --> Security
 UsersRouter --> User
 ```
 
-图表来源
+**图表来源**
 - [apps/api/app/modules/auth/router.py:1-17](file://apps/api/app/modules/auth/router.py#L1-L17)
 - [apps/api/app/modules/auth/service.py:1-16](file://apps/api/app/modules/auth/service.py#L1-L16)
 - [apps/api/app/core/security.py:1-9](file://apps/api/app/core/security.py#L1-L9)
@@ -337,7 +345,7 @@ UsersRouter --> User
 - 单元测试参考
   - 覆盖注册、登录、刷新、登出、忘记/重置密码等场景
 
-章节来源
+**章节来源**
 - [apps/api/tests/test_auth.py:48-191](file://apps/api/tests/test_auth.py#L48-L191)
 - [apps/api/app/modules/auth/service.py:50-92](file://apps/api/app/modules/auth/service.py#L50-L92)
 - [apps/api/app/core/security.py:49-72](file://apps/api/app/core/security.py#L49-L72)
@@ -354,6 +362,7 @@ UsersRouter --> User
   - 路径：/api/v1/auth/register
   - 请求体：RegisterRequest
     - 字段：email（邮箱）、password（至少8位）、nickname（可选）
+    - **更新**：前端现使用RegisterParams接口进行类型验证，提供更好的IDE支持
   - 成功响应：TokenResponse
     - 字段：access_token、refresh_token、token_type
   - 失败示例：
@@ -408,7 +417,7 @@ UsersRouter --> User
   - 失败示例：
     - 400：无效或过期的重置token
 
-章节来源
+**章节来源**
 - [apps/api/app/modules/auth/router.py:24-92](file://apps/api/app/modules/auth/router.py#L24-L92)
 - [apps/api/app/schemas/auth.py:5-37](file://apps/api/app/schemas/auth.py#L5-L37)
 
@@ -427,7 +436,7 @@ Refresh --> |失败| Reauth["重新登录获取新令牌对"]
 Reauth --> UseAccess
 ```
 
-图表来源
+**图表来源**
 - [apps/api/app/modules/auth/service.py:77-92](file://apps/api/app/modules/auth/service.py#L77-L92)
 - [apps/api/app/core/security.py:32-46](file://apps/api/app/core/security.py#L32-L46)
 
@@ -447,7 +456,7 @@ Reauth --> UseAccess
   - 所有受保护端点使用认证中间件
   - 用户资料端点需验证用户状态与令牌有效性
 
-章节来源
+**章节来源**
 - [apps/api/app/core/config.py:30-34](file://apps/api/app/core/config.py#L30-L34)
 - [apps/api/app/deps.py:15-33](file://apps/api/app/deps.py#L15-L33)
 - [apps/api/tests/test_auth.py:63-89](file://apps/api/tests/test_auth.py#L63-L89)
