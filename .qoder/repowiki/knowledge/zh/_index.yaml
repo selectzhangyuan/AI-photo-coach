@@ -2,7 +2,7 @@
 schema_version: 1
 locale: zh-CN
 branch: v1
-exported_at: "2026-06-01T10:07:55Z"
+exported_at: "2026-06-03T02:30:59Z"
 modules:
     "":
         dir_name: AI 影像教练平台
@@ -14,64 +14,73 @@ modules:
             - .qoder\commands\opsx\explore.md
             - .qoder\commands\opsx\propose.md
             - .qoder\plans\setup-alembic-migrations_b59bffd3.md
-            - .qoder\repowiki\zh\content\AI分析系统\AI分析系统.md
-            - .qoder\repowiki\zh\content\AI分析系统\分析门面模式.md
-            - .qoder\repowiki\zh\content\AI分析系统\大语言模型分析.md
-            - .qoder\repowiki\zh\content\AI分析系统\结果组合器.md
-            - .qoder\repowiki\zh\content\AI分析系统\规则引擎编辑规划.md
-            - .qoder\repowiki\zh\content\AI分析系统\计算机视觉分析.md
-            - .qoder\repowiki\zh\content\前端应用文档\API集成.md
-            - .qoder\repowiki\zh\content\前端应用文档\UI组件.md
-            - .qoder\repowiki\zh\content\前端应用文档\前端应用文档.md
-            - .qoder\repowiki\zh\content\前端应用文档\状态管理.md
-            - .qoder\repowiki\zh\content\前端应用文档\组件架构.md
-            - .qoder\repowiki\zh\content\前端应用文档\路由系统.md
-            - .qoder\repowiki\zh\content\后端API文档\分析任务API.md
+            - .qoder\repowiki\knowledge\zh\AI 影像教练平台\_module.yaml
+            - .qoder\repowiki\knowledge\zh\AI 影像教练平台\基础设施编排与部署\_module.yaml
+            - .qoder\repowiki\knowledge\zh\AI 影像教练平台\基础设施编排与部署\技术栈.md
+            - .qoder\repowiki\knowledge\zh\AI 影像教练平台\基础设施编排与部署\架构设计.md
+            - .qoder\repowiki\knowledge\zh\AI 影像教练平台\基础设施编排与部署\概述.md
+            - .qoder\repowiki\knowledge\zh\AI 影像教练平台\基础设施编排与部署\特殊配置与命令.md
+            - .qoder\repowiki\knowledge\zh\AI 影像教练平台\基础设施编排与部署\编码规范.md
+            - .qoder\repowiki\knowledge\zh\AI 影像教练平台\技术栈.md
+            - .qoder\repowiki\knowledge\zh\AI 影像教练平台\架构设计.md
+            - .qoder\repowiki\knowledge\zh\AI 影像教练平台\概述.md
+            - .qoder\repowiki\knowledge\zh\AI 影像教练平台\特殊配置与命令.md
+            - .qoder\repowiki\knowledge\zh\AI 影像教练平台\编码规范.md
+            - .qoder\repowiki\knowledge\zh\AI 影像教练平台\项目文档与规范管理\_module.yaml
+            - .qoder\repowiki\knowledge\zh\AI 影像教练平台\项目文档与规范管理\架构设计.md
+            - .qoder\repowiki\knowledge\zh\AI 影像教练平台\项目文档与规范管理\概述.md
+            - .qoder\repowiki\knowledge\zh\AI 影像教练平台\项目文档与规范管理\编码规范.md
+            - .qoder\repowiki\knowledge\zh\_index.yaml
+            - .qoder\repowiki\zh\content\AI分析服务\AI分析服务.md
+            - .qoder\repowiki\zh\content\AI分析服务\分析器外观模式.md
+            - .qoder\repowiki\zh\content\AI分析服务\大语言模型分析器.md
+            - .qoder\repowiki\zh\content\AI分析服务\结果组合器模块.md
+            - .qoder\repowiki\zh\content\AI分析服务\规则引擎模块.md
+            - .qoder\repowiki\zh\content\AI分析服务\计算机视觉模块.md
+            - .qoder\repowiki\zh\content\前端应用架构\API集成与HTTP客户端.md
+            - .qoder\repowiki\zh\content\前端应用架构\Vue应用初始化与配置.md
+            - .qoder\repowiki\zh\content\前端应用架构\前端应用架构.md
+            - .qoder\repowiki\zh\content\前端应用架构\状态管理设计.md
+            - .qoder\repowiki\zh\content\前端应用架构\路由系统设计.md
+            - .qoder\repowiki\zh\content\后端API文档\分析API.md
             - .qoder\repowiki\zh\content\后端API文档\后端API文档.md
-            - .qoder\repowiki\zh\content\后端API文档\图片管理API.md
-            - .qoder\repowiki\zh\content\后端API文档\用户管理API.md
+            - .qoder\repowiki\zh\content\后端API文档\图片API.md
+            - .qoder\repowiki\zh\content\后端API文档\用户API.md
             - .qoder\repowiki\zh\content\后端API文档\认证API.md
-            - .qoder\repowiki\zh\content\存储系统.md
+            - .qoder\repowiki\zh\content\存储和缓存\Redis缓存系统.md
+            - .qoder\repowiki\zh\content\存储和缓存\S3存储服务.md
+            - .qoder\repowiki\zh\content\存储和缓存\存储和缓存.md
+            - .qoder\repowiki\zh\content\存储和缓存\数据库管理.md
+            - .qoder\repowiki\zh\content\安全和认证\JWT令牌管理.md
+            - .qoder\repowiki\zh\content\安全和认证\安全和认证.md
+            - .qoder\repowiki\zh\content\安全和认证\密码哈希与验证.md
+            - .qoder\repowiki\zh\content\安全和认证\权限与角色管理.md
+            - .qoder\repowiki\zh\content\安全和认证\认证服务实现.md
             - .qoder\repowiki\zh\content\开发者指南.md
-            - .qoder\repowiki\zh\content\开放规范\变更控制.md
-            - .qoder\repowiki\zh\content\开放规范\开放规范.md
-            - .qoder\repowiki\zh\content\开放规范\接口契约.md
-            - .qoder\repowiki\zh\content\开放规范\文档标准.md
-            - .qoder\repowiki\zh\content\开放规范\需求管理.md
-            - .qoder\repowiki\zh\content\异步任务系统\Celery配置.md
-            - .qoder\repowiki\zh\content\异步任务系统\Worker部署.md
-            - .qoder\repowiki\zh\content\异步任务系统\任务监控.md
-            - .qoder\repowiki\zh\content\异步任务系统\分析任务定义.md
-            - .qoder\repowiki\zh\content\异步任务系统\异步任务系统.md
+            - .qoder\repowiki\zh\content\异步任务系统.md
             - .qoder\repowiki\zh\content\快速开始.md
-            - .qoder\repowiki\zh\content\数据契约\分析结果契约.md
-            - .qoder\repowiki\zh\content\数据契约\数据契约.md
-            - .qoder\repowiki\zh\content\数据契约\标注契约.md
-            - .qoder\repowiki\zh\content\数据契约\编辑动作契约.md
-            - .qoder\repowiki\zh\content\数据库设计\分析任务模型.md
-            - .qoder\repowiki\zh\content\数据库设计\分析特征模型.md
-            - .qoder\repowiki\zh\content\数据库设计\分析结果模型.md
-            - .qoder\repowiki\zh\content\数据库设计\图片资源模型.md
-            - .qoder\repowiki\zh\content\数据库设计\数据库设计.md
-            - .qoder\repowiki\zh\content\数据库设计\数据模型概览.md
-            - .qoder\repowiki\zh\content\数据库设计\用户模型.md
+            - .qoder\repowiki\zh\content\扩展和定制\OpenSpec变更管理.md
+            - .qoder\repowiki\zh\content\扩展和定制\UI组件定制.md
+            - .qoder\repowiki\zh\content\扩展和定制\扩展和定制.md
+            - .qoder\repowiki\zh\content\扩展和定制\插件开发指南.md
+            - .qoder\repowiki\zh\content\扩展和定制\第三方服务集成.md
+            - .qoder\repowiki\zh\content\扩展和定制\配置系统扩展.md
+            - .qoder\repowiki\zh\content\数据模型设计\分析数据模型.md
+            - .qoder\repowiki\zh\content\数据模型设计\数据库架构.md
+            - .qoder\repowiki\zh\content\数据模型设计\数据模型设计.md
+            - .qoder\repowiki\zh\content\数据模型设计\核心数据模型.md
             - .qoder\repowiki\zh\content\测试策略.md
-            - .qoder\repowiki\zh\content\认证系统\JWT令牌管理.md
-            - .qoder\repowiki\zh\content\认证系统\OAuth2集成.md
-            - .qoder\repowiki\zh\content\认证系统\会话管理.md
-            - .qoder\repowiki\zh\content\认证系统\密码安全.md
-            - .qoder\repowiki\zh\content\认证系统\权限控制.md
-            - .qoder\repowiki\zh\content\认证系统\认证系统.md
-            - .qoder\repowiki\zh\content\部署与运维\安全加固.md
-            - .qoder\repowiki\zh\content\部署与运维\性能优化.md
-            - .qoder\repowiki\zh\content\部署与运维\生产环境部署.md
-            - .qoder\repowiki\zh\content\部署与运维\监控与日志.md
-            - .qoder\repowiki\zh\content\部署与运维\部署与运维.md
-            - .qoder\repowiki\zh\content\项目概述\快速开始.md
-            - .qoder\repowiki\zh\content\项目概述\技术栈概览.md
-            - .qoder\repowiki\zh\content\项目概述\架构设计.md
-            - .qoder\repowiki\zh\content\项目概述\项目介绍.md
-            - .qoder\repowiki\zh\content\项目概述\项目概述.md
+            - .qoder\repowiki\zh\content\系统架构\技术栈选型.md
+            - .qoder\repowiki\zh\content\系统架构\整体架构设计.md
+            - .qoder\repowiki\zh\content\系统架构\系统架构.md
+            - .qoder\repowiki\zh\content\系统架构\组件交互关系.md
+            - .qoder\repowiki\zh\content\系统架构\部署架构.md
+            - .qoder\repowiki\zh\content\部署和运维\Nginx反向代理配置.md
+            - .qoder\repowiki\zh\content\部署和运维\生产环境部署.md
+            - .qoder\repowiki\zh\content\部署和运维\监控和日志系统.md
+            - .qoder\repowiki\zh\content\部署和运维\部署和运维.md
+            - .qoder\repowiki\zh\content\部署和运维\部署脚本和自动化.md
+            - .qoder\repowiki\zh\content\项目概述.md
             - .qoder\repowiki\zh\meta\repowiki-metadata.json
             - .qoder\skills\brainstorming\SKILL.md
             - .qoder\skills\brainstorming\scripts\frame-template.html
@@ -143,9 +152,13 @@ modules:
             - apps\api\app\core\celery_app.py
             - apps\api\app\core\config.py
             - apps\api\app\core\database.py
+            - apps\api\app\core\logging.py
+            - apps\api\app\core\request_id.py
             - apps\api\app\core\security.py
             - apps\api\app\deps.py
             - apps\api\app\main.py
+            - apps\api\app\middleware\__init__.py
+            - apps\api\app\middleware\logging.py
             - apps\api\app\migrations\README
             - apps\api\app\migrations\env.py
             - apps\api\app\migrations\script.py.mako
@@ -188,6 +201,7 @@ modules:
             - apps\api\app\services\storage\s3_storage.py
             - apps\api\app\tasks\__init__.py
             - apps\api\app\tasks\analyze_photo.py
+            - apps\api\logs\app.log
             - apps\api\requirements.txt
             - apps\api\test.db
             - apps\api\test_users.db
@@ -235,16 +249,23 @@ modules:
             - infra\docker-compose.prod.yml
             - infra\docker-compose.yml
             - infra\nginx\default.conf
+            - logs\app.log
             - openspec\changes\add-user-auth\.openspec.yaml
             - openspec\changes\add-user-auth\design.md
             - openspec\changes\add-user-auth\proposal.md
             - openspec\changes\add-user-auth\specs\user-auth\spec.md
             - openspec\changes\add-user-auth\specs\user-profile\spec.md
             - openspec\changes\add-user-auth\tasks.md
+            - openspec\changes\archive\2026-06-02-add-structured-logging\.openspec.yaml
+            - openspec\changes\archive\2026-06-02-add-structured-logging\design.md
+            - openspec\changes\archive\2026-06-02-add-structured-logging\proposal.md
+            - openspec\changes\archive\2026-06-02-add-structured-logging\specs\backend-logging\spec.md
+            - openspec\changes\archive\2026-06-02-add-structured-logging\tasks.md
             - openspec\config.yaml
             - packages\contracts\analysis-result.schema.json
             - packages\contracts\annotation.schema.json
             - packages\contracts\edit-action.schema.json
+            - test_users.db
         source_files: []
         children:
             - docs_tooling

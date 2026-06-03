@@ -2,7 +2,7 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "../stores/auth";
-import { register, getProfile } from "../api/auth";
+import { register, getProfile, type RegisterParams } from "../api/auth";
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -32,7 +32,7 @@ async function handleRegister(): Promise<void> {
 
   submitting.value = true;
   try {
-    const params: Record<string, string> = {
+    const params: RegisterParams = {
       email: email.value,
       password: password.value,
     };
