@@ -1,5 +1,9 @@
+import logging
+import time
 from functools import lru_cache
 from typing import Any
+
+logger = logging.getLogger(__name__)
 
 
 class ResultComposer:
@@ -12,7 +16,8 @@ class ResultComposer:
         llm_result: dict[str, Any],
         edit_actions: list[dict[str, Any]],
     ) -> dict[str, Any]:
-        return {
+        t0 = time.monotonic()
+        result = {
             "version": self.version,
             "summary": llm_result["summary"],
             "suggestions": llm_result["suggestions"],
@@ -21,6 +26,18 @@ class ResultComposer:
             "annotations": self._build_annotations(features),
             "edit_actions": edit_actions,
         }
+
+        logger.debug(
+            "Result composed",
+            extra={
+                "suggestion_count": len(llm_result.get("suggestions", [])),
+                "annotation_count": len(result["annotations"]),
+                "edit_action_count": len(edit_actions),
+                "duration_ms": round((time.monotonic() - t0) * 1000),
+            },
+        )
+
+        return result
 
     @staticmethod
     def _build_annotations(features: dict[str, Any]) -> list[dict[str, Any]]:

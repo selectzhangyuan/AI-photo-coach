@@ -65,8 +65,11 @@ services:
       MODEL_NAME: mock-vision-v1
       PROMPT_VERSION: v1
       CORS_ORIGINS: http://localhost:5151,http://127.0.0.1:5151,http://localhost:8000,http://127.0.0.1:8000
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
     ports:
       - "8000:8000"
+    volumes:
+      - api_logs:/app/logs
     depends_on:
       postgres:
         condition: service_healthy
@@ -92,6 +95,9 @@ services:
       S3_REGION: us-east-1
       MODEL_NAME: mock-vision-v1
       PROMPT_VERSION: v1
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+    volumes:
+      - worker_logs:/app/logs
     depends_on:
       postgres:
         condition: service_healthy
@@ -104,3 +110,5 @@ volumes:
   pg_data:
   redis_data:
   minio_data:
+  api_logs:
+  worker_logs:

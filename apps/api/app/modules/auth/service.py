@@ -119,7 +119,7 @@ class AuthService:
         if user:
             reset_token = create_access_token(subject=str(user.id), expires_delta=timedelta(hours=1))
             # 开发模式：输出到日志
-            logger.info(f"[DEV] Password reset token for {email}: {reset_token}")
+            logger.info("Password reset token generated", extra={"email": email})
 
     def reset_password(self, token: str, new_password: str) -> None:
         """用 reset token 重置密码"""

@@ -3,12 +3,22 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import settings
 from app.core.database import init_db
+from app.core.logging import setup_logging
+from app.middleware.logging import RequestLoggingMiddleware
 from app.modules.analysis.router import router as analysis_router
 from app.modules.auth.router import router as auth_router
 from app.modules.images.router import router as images_router
 from app.modules.users.router import router as users_router
 
+setup_logging(
+    level=settings.log_level,
+    env=settings.env,
+    module_levels={"app.services": settings.log_level_services},
+)
+
 app = FastAPI(title=settings.app_name)
+
+app.add_middleware(RequestLoggingMiddleware)
 
 app.add_middleware(
     CORSMiddleware,

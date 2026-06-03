@@ -19,6 +19,10 @@ class Settings(BaseSettings):
     s3_bucket: str = "photo-images"
     s3_region: str = "us-east-1"
 
+    log_level: str = "INFO"
+    # 服务层独立级别（开发时可设为 DEBUG 查看 AI 链路细节，不影响全局噪音）
+    log_level_services: str = "INFO"
+
     model_name: str = "mock-vision-v1"
     prompt_version: str = "v1"
 

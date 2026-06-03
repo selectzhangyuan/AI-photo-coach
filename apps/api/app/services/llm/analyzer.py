@@ -1,11 +1,16 @@
+import logging
+import time
 from functools import lru_cache
 from typing import Any
+
+logger = logging.getLogger(__name__)
 
 
 class LLMAnalyzer:
     version = "1.0"
 
     def analyze(self, features: dict[str, Any]) -> dict[str, Any]:
+        t0 = time.monotonic()
         image = features["image"]
         subject = features["subject"]
         stats = features["stats"]
@@ -108,6 +113,15 @@ class LLMAnalyzer:
                 "action": "在保留主体周围留白的前提下，适当清理分散注意力的边缘区域。",
                 "text": "当前叙事焦点主要依赖主体位置，建议清理分散注意力的边缘区域。",
             }
+        )
+
+        duration_ms = round((time.monotonic() - t0) * 1000)
+        logger.debug(
+            "LLM analysis done",
+            extra={
+                "suggestion_count": len(suggestions),
+                "duration_ms": duration_ms,
+            },
         )
 
         return {

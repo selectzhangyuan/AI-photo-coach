@@ -1,9 +1,14 @@
+import logging
+import time
 from functools import lru_cache
 from typing import Any
+
+logger = logging.getLogger(__name__)
 
 
 class EditPlanner:
     def plan(self, features: dict[str, Any], suggestions: list[dict[str, Any]]) -> list[dict[str, Any]]:
+        t0 = time.monotonic()
         image = features["image"]
         subject = features["subject"]
         stats = features["stats"]
@@ -30,6 +35,14 @@ class EditPlanner:
                     "apply_mode": "non_destructive",
                 }
             )
+
+        logger.debug(
+            "Edit plan generated",
+            extra={
+                "actions_count": len(actions),
+                "duration_ms": round((time.monotonic() - t0) * 1000),
+            },
+        )
 
         return actions
 

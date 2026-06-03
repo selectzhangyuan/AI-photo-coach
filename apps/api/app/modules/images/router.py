@@ -1,4 +1,5 @@
 import hashlib
+import logging
 import uuid
 from datetime import datetime, timezone
 from io import BytesIO
@@ -13,6 +14,8 @@ from app.deps import get_current_user_id
 from app.models.image_asset import ImageAsset
 from app.schemas.image import ImageUploadResponse
 from app.services.storage.s3_storage import get_storage_service
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/images", tags=["images"])
 
@@ -65,6 +68,18 @@ async def upload_image(
     db.add(image_asset)
     db.commit()
     db.refresh(image_asset)
+
+    logger.info(
+        "Image uploaded",
+        extra={
+            "image_id": str(image_asset.id),
+            "user_id": str(user_id),
+            "size_bytes": image_asset.size_bytes,
+            "mime_type": image_asset.mime_type,
+            "width": image_asset.width,
+            "height": image_asset.height,
+        },
+    )
 
     return ImageUploadResponse(
         image_id=image_asset.id,

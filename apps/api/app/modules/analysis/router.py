@@ -1,3 +1,4 @@
+import logging
 import uuid
 from typing import Any
 
@@ -7,6 +8,7 @@ from sqlalchemy.orm import Session
 
 from app.core.config import settings
 from app.core.database import get_db
+from app.core.request_id import get_request_id
 from app.deps import get_current_user_id
 from app.models.analysis_result import AnalysisResult
 from app.models.analysis_task import AnalysisTask
@@ -20,6 +22,8 @@ from app.schemas.analysis import (
     RetryTaskResponse,
 )
 from app.tasks.analyze_photo import run_analysis_task
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/analysis", tags=["analysis"])
 
@@ -68,7 +72,13 @@ def create_task(
     db.commit()
     db.refresh(task)
 
-    run_analysis_task.delay(str(task.id))
+    request_id = get_request_id()
+    logger.info(
+        "Analysis task created",
+        extra={"task_id": str(task.id), "image_id": str(image.id), "user_id": str(user_id)},
+    )
+
+    run_analysis_task.delay(str(task.id), request_id=request_id)
 
     return CreateAnalysisTaskResponse(task_id=task.id, task_type=task.task_type, status=task.status)
 
@@ -146,5 +156,11 @@ def retry_task(
     task.finished_at = None
     db.commit()
 
-    run_analysis_task.delay(str(task.id))
+    request_id = get_request_id()
+    logger.info(
+        "Analysis task retried",
+        extra={"task_id": str(task.id), "user_id": str(user_id)},
+    )
+
+    run_analysis_task.delay(str(task.id), request_id=request_id)
     return RetryTaskResponse(task_id=task.id, task_type=task.task_type, status=task.status)

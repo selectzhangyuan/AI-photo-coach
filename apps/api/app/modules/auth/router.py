@@ -32,7 +32,7 @@ def register(payload: RegisterRequest, db: Session = Depends(get_db)):
     )
     # 生成验证 token 并记录日志（开发模式）
     verify_token_str = service.create_email_verification_token(str(user.id))
-    logger.info(f"[DEV] Email verification token for {payload.email}: {verify_token_str}")
+    logger.info("Email verification token generated", extra={"email": payload.email})
 
     # 返回登录 token
     tokens = service.login_with_password(email=payload.email, password=payload.password)

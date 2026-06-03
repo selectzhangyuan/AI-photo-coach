@@ -1,8 +1,12 @@
+import logging
+import time
 from functools import lru_cache
 from io import BytesIO
 from typing import Any
 
 from PIL import Image, ImageStat
+
+logger = logging.getLogger(__name__)
 
 
 def _clamp(value: float, low: float, high: float) -> float:
@@ -13,6 +17,7 @@ class CVFeatureExtractor:
     version = "1.0"
 
     def extract(self, image_bytes: bytes, mime_type: str) -> dict[str, Any]:
+        t0 = time.monotonic()
         image = Image.open(BytesIO(image_bytes)).convert("RGB")
         width, height = image.size
 
@@ -61,6 +66,17 @@ class CVFeatureExtractor:
             "y2": round(height * 0.5),
             "coord_space": "image_pixels",
         }
+
+        logger.debug(
+            "CV features extracted",
+            extra={
+                "width": width,
+                "height": height,
+                "mean_brightness": mean_brightness,
+                "contrast": contrast,
+                "duration_ms": round((time.monotonic() - t0) * 1000),
+            },
+        )
 
         return {
             "version": self.version,
