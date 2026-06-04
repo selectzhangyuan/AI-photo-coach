@@ -210,6 +210,7 @@ docker compose --env-file infra/.env.prod -f infra/docker-compose.prod.yml up -d
 
 - If `docker pull` times out against `registry-1.docker.io`, configure Docker registry mirrors and verify with `docker info`.
 - If `docker compose` cannot connect to the daemon, verify `docker.service`, `docker.socket`, and `/run/docker.sock`.
+- If the API logs show `fe_sendauth: no password supplied`, verify `infra/.env.prod` contains `POSTGRES_PASSWORD=...` and run Compose with `--env-file infra/.env.prod` or `./infra/deploy.sh`.
 - If the homepage opens but `/healthz` returns `504`, inspect `api`, `postgres`, and `minio` logs first.
 - If only one service is failing, use `docker compose ... logs <service> --tail 200` to isolate it before changing configuration.
 

@@ -1,6 +1,8 @@
 from functools import lru_cache
 
+from pydantic import model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from sqlalchemy import URL
 
 
 class Settings(BaseSettings):
@@ -10,7 +12,12 @@ class Settings(BaseSettings):
     env: str = "dev"
     api_prefix: str = "/api/v1"
 
-    db_url: str = "postgresql+psycopg://postgres:postgres@localhost:5432/photo_coach"
+    db_url: str | None = None
+    db_user: str = "postgres"
+    db_password: str = "postgres"
+    db_host: str = "localhost"
+    db_port: int = 5432
+    db_name: str = "photo_coach"
     redis_url: str = "redis://localhost:6379/0"
 
     s3_endpoint: str = "http://localhost:9000"
@@ -36,6 +43,21 @@ class Settings(BaseSettings):
     jwt_algorithm: str = "HS256"
     access_token_expire_minutes: int = 30
     refresh_token_expire_days: int = 7
+
+    @model_validator(mode="after")
+    def build_db_url(self) -> "Settings":
+        if self.db_url:
+            return self
+
+        self.db_url = URL.create(
+            "postgresql+psycopg",
+            username=self.db_user,
+            password=self.db_password,
+            host=self.db_host,
+            port=self.db_port,
+            database=self.db_name,
+        ).render_as_string(hide_password=False)
+        return self
 
     @property
     def cors_origin_list(self) -> list[str]:

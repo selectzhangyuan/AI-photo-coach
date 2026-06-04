@@ -17,13 +17,13 @@ services:
     image: ${POSTGRES_IMAGE:-postgres:16}
     container_name: photo-coach-postgres
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER:?Set POSTGRES_USER in infra/.env.prod}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in infra/.env.prod}
+      POSTGRES_DB: ${POSTGRES_DB:?Set POSTGRES_DB in infra/.env.prod}
     volumes:
       - pg_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:?Set POSTGRES_USER in infra/.env.prod} -d ${POSTGRES_DB:?Set POSTGRES_DB in infra/.env.prod}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -46,8 +46,8 @@ services:
     container_name: photo-coach-minio
     command: server /data --console-address ":9001"
     environment:
-      MINIO_ROOT_USER: ${S3_ACCESS_KEY}
-      MINIO_ROOT_PASSWORD: ${S3_SECRET_KEY}
+      MINIO_ROOT_USER: ${S3_ACCESS_KEY:?Set S3_ACCESS_KEY in infra/.env.prod}
+      MINIO_ROOT_PASSWORD: ${S3_SECRET_KEY:?Set S3_SECRET_KEY in infra/.env.prod}
     volumes:
       - minio_data:/data
     healthcheck:
@@ -65,16 +65,20 @@ services:
         PYTHON_IMAGE: ${PYTHON_IMAGE:-python:3.12-slim}
     container_name: photo-coach-api
     environment:
-      DB_URL: postgresql+psycopg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      DB_USER: ${POSTGRES_USER:?Set POSTGRES_USER in infra/.env.prod}
+      DB_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in infra/.env.prod}
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: ${POSTGRES_DB:?Set POSTGRES_DB in infra/.env.prod}
       REDIS_URL: redis://redis:6379/0
       S3_ENDPOINT: http://minio:9000
-      S3_ACCESS_KEY: ${S3_ACCESS_KEY}
-      S3_SECRET_KEY: ${S3_SECRET_KEY}
-      S3_BUCKET: ${S3_BUCKET}
+      S3_ACCESS_KEY: ${S3_ACCESS_KEY:?Set S3_ACCESS_KEY in infra/.env.prod}
+      S3_SECRET_KEY: ${S3_SECRET_KEY:?Set S3_SECRET_KEY in infra/.env.prod}
+      S3_BUCKET: ${S3_BUCKET:?Set S3_BUCKET in infra/.env.prod}
       S3_REGION: ${S3_REGION:-us-east-1}
       MODEL_NAME: ${MODEL_NAME:-mock-vision-v1}
       PROMPT_VERSION: ${PROMPT_VERSION:-v1}
-      CORS_ORIGINS: http://${SERVER_IP}
+      CORS_ORIGINS: http://${SERVER_IP:?Set SERVER_IP in infra/.env.prod}
       ENV: production
       LOG_LEVEL: ${LOG_LEVEL:-INFO}
       LOG_LEVEL_SERVICES: ${LOG_LEVEL_SERVICES:-INFO}
@@ -106,12 +110,16 @@ services:
         PYTHON_IMAGE: ${PYTHON_IMAGE:-python:3.12-slim}
     container_name: photo-coach-worker
     environment:
-      DB_URL: postgresql+psycopg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      DB_USER: ${POSTGRES_USER:?Set POSTGRES_USER in infra/.env.prod}
+      DB_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in infra/.env.prod}
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: ${POSTGRES_DB:?Set POSTGRES_DB in infra/.env.prod}
       REDIS_URL: redis://redis:6379/0
       S3_ENDPOINT: http://minio:9000
-      S3_ACCESS_KEY: ${S3_ACCESS_KEY}
-      S3_SECRET_KEY: ${S3_SECRET_KEY}
-      S3_BUCKET: ${S3_BUCKET}
+      S3_ACCESS_KEY: ${S3_ACCESS_KEY:?Set S3_ACCESS_KEY in infra/.env.prod}
+      S3_SECRET_KEY: ${S3_SECRET_KEY:?Set S3_SECRET_KEY in infra/.env.prod}
+      S3_BUCKET: ${S3_BUCKET:?Set S3_BUCKET in infra/.env.prod}
       S3_REGION: ${S3_REGION:-us-east-1}
       MODEL_NAME: ${MODEL_NAME:-mock-vision-v1}
       PROMPT_VERSION: ${PROMPT_VERSION:-v1}
