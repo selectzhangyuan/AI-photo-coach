@@ -14,10 +14,11 @@ RUN pip install --upgrade pip -i https://mirrors.cloud.tencent.com/pypi/simple/ 
     && pip install --no-cache-dir --default-timeout=120 --retries 10 -i https://mirrors.cloud.tencent.com/pypi/simple/ --trusted-host mirrors.cloud.tencent.com -r /tmp/requirements.txt
 
 COPY apps/api /app
-RUN chown -R app:app /app
+COPY apps/api/start.sh /start.sh
+RUN chown -R app:app /app && chmod +x /start.sh
 
 USER app
 
 EXPOSE 8000
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["/start.sh"]
