@@ -1,36 +1,54 @@
-"""JWT 认证与密码哈希工具模块"""
+"""JWT authentication and password hashing helpers."""
+
+import bcrypt
+import hashlib
 from datetime import datetime, timedelta, timezone
 
 from fastapi import HTTPException, status
-from jose import jwt, JWTError, ExpiredSignatureError
-from passlib.context import CryptContext
+from jose import ExpiredSignatureError, JWTError, jwt
 from pydantic import BaseModel
 
 from app.core.config import settings
 
 
 class TokenPayload(BaseModel):
-    """JWT Token 载荷"""
+    """JWT token payload."""
+
     sub: str
     exp: datetime | None = None
     type: str = "access"
 
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+def _prehash(password: str) -> bytes:
+    """SHA-256 pre-hash so bcrypt never receives more than 72 bytes."""
+    return hashlib.sha256(password.encode("utf-8")).hexdigest().encode("utf-8")
 
 
 def hash_password(password: str) -> str:
-    """对明文密码进行 bcrypt 哈希"""
-    return pwd_context.hash(password)
+    """Hash a plaintext password with bcrypt (SHA-256 pre-hashed)."""
+    return bcrypt.hashpw(_prehash(password), bcrypt.gensalt()).decode("utf-8")
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
-    """验证明文密码与哈希是否匹配"""
-    return pwd_context.verify(plain_password, hashed_password)
+    """Verify a plaintext password against a stored hash.
+
+    Supports both the new SHA-256 pre-hashed format and the legacy
+    direct-bcrypt format so existing users can still log in.
+    """
+    hashed = hashed_password.encode("utf-8")
+    # New format: SHA-256 pre-hash
+    if bcrypt.checkpw(_prehash(plain_password), hashed):
+        return True
+    # Legacy fallback: direct bcrypt (for users created before the pre-hash change)
+    try:
+        return bcrypt.checkpw(plain_password.encode("utf-8"), hashed)
+    except (ValueError, TypeError):
+        return False
 
 
 def create_access_token(subject: str, expires_delta: timedelta | None = None) -> str:
-    """创建 access token"""
+    """Create an access token."""
+
     if expires_delta is None:
         expires_delta = timedelta(minutes=settings.access_token_expire_minutes)
     expire = datetime.now(timezone.utc) + expires_delta
@@ -39,7 +57,8 @@ def create_access_token(subject: str, expires_delta: timedelta | None = None) ->
 
 
 def create_refresh_token(subject: str) -> str:
-    """创建 refresh token"""
+    """Create a refresh token."""
+
     expires_delta = timedelta(days=settings.refresh_token_expire_days)
     expire = datetime.now(timezone.utc) + expires_delta
     to_encode = {"sub": subject, "exp": expire, "type": "refresh"}
@@ -47,7 +66,8 @@ def create_refresh_token(subject: str) -> str:
 
 
 def verify_token(token: str) -> TokenPayload:
-    """验证并解码 JWT token，失败时抛出 401"""
+    """Decode and validate a JWT token."""
+
     try:
         payload = jwt.decode(
             token, settings.jwt_secret_key, algorithms=[settings.jwt_algorithm]

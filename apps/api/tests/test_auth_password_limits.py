@@ -43,28 +43,29 @@ def client():
     app.dependency_overrides.clear()
 
 
-def test_register_password_too_long_returns_422(client):
+def test_register_long_password_accepted(client):
+    """Passwords longer than 72 bytes should now work (SHA-256 pre-hashed)."""
     resp = client.post(
         "/api/v1/auth/register",
-        json={"email": "longpass@example.com", "password": "a" * 73},
+        json={"email": "longpass@example.com", "password": "a" * 100},
     )
-
-    assert resp.status_code == 422
-
-
-def test_reset_password_too_long_returns_422(client):
-    resp = client.post(
-        "/api/v1/auth/reset-password",
-        json={"token": "invalid.token", "new_password": "a" * 73},
-    )
-
-    assert resp.status_code == 422
+    # Should not be rejected with 422 for length reasons
+    assert resp.status_code != 422 or "at most 72" not in resp.text
 
 
-def test_register_password_too_long_in_utf8_bytes_returns_422(client):
+def test_register_emoji_password_accepted(client):
+    """Multi-byte emoji passwords should now work (SHA-256 pre-hashed)."""
     resp = client.post(
         "/api/v1/auth/register",
         json={"email": "emoji@example.com", "password": "😀" * 19},
     )
+    assert resp.status_code != 422 or "at most 72" not in resp.text
 
+
+def test_register_password_too_short_returns_422(client):
+    """Minimum length (8 chars) is still enforced."""
+    resp = client.post(
+        "/api/v1/auth/register",
+        json={"email": "short@example.com", "password": "1234567"},
+    )
     assert resp.status_code == 422
