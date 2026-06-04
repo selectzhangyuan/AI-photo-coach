@@ -59,3 +59,12 @@ def test_reset_password_too_long_returns_422(client):
     )
 
     assert resp.status_code == 422
+
+
+def test_register_password_too_long_in_utf8_bytes_returns_422(client):
+    resp = client.post(
+        "/api/v1/auth/register",
+        json={"email": "emoji@example.com", "password": "😀" * 19},
+    )
+
+    assert resp.status_code == 422
