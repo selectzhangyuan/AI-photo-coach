@@ -39,9 +39,11 @@ def setup_db():
 @pytest.fixture
 def client():
     app.dependency_overrides[get_db] = override_get_db
-    with patch("app.main.init_db"):
-        with TestClient(app) as c:
-            yield c
+    startup_handlers = app.router.on_startup.copy()
+    app.router.on_startup.clear()
+    with TestClient(app) as c:
+        yield c
+    app.router.on_startup.extend(startup_handlers)
     app.dependency_overrides.clear()
 
 
