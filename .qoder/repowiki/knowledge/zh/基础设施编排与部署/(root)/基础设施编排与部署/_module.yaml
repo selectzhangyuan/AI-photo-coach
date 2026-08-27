@@ -1,5 +1,5 @@
 schema_version: 1
-module_path: infra
+module_path: 9e12c040-aaab-4912-a38a-9b43be9072a6
 title: 基础设施编排与部署
 scope:
     - infra/
